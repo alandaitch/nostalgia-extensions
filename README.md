@@ -16,7 +16,7 @@ Dos extensiones gratuitas de Chrome creadas por Alan Daitch:
 
 También podés descargar este repositorio y seleccionar directamente `instagram-fotolog/` o `reddit-taringa/`.
 
-**Chrome Web Store:** todavía sin publicar. La descarga actual requiere los pasos anteriores.
+**Chrome Web Store:** ambas extensiones se enviaron a revisión el 15 de octubre de 2026, con publicación automática después de la aprobación. Aún no están disponibles en la tienda; mientras tanto, la descarga requiere los pasos anteriores.
 
 ## Uso
 
