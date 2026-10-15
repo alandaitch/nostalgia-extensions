@@ -1,0 +1,24 @@
+FOTOLOG PARA INSTAGRAM · 2.3.0
+
+Actualización: en chrome://extensions, recargá esta extensión y después Instagram.
+La carpeta puede quedarse en el mismo lugar; se conservan tus preferencias.
+
+Instalación nueva: Chrome > chrome://extensions > Modo de desarrollador >
+Cargar descomprimida > seleccionar esta carpeta (la que tiene manifest.json).
+
+Fotolog negro con logo y título violetas, una foto central, miniaturas laterales,
+anterior/siguiente y carruseles. Ocho paletas y frase desde el ícono de la extensión.
+El menú Colores del propio Fotolog permite elegir Al azar por usuario.
+Cada autor conserva su paleta; Mezclar paletas cambia la combinación.
+Firmar, Buscar y Crear usan los controles originales con una barra de regreso.
+Mensajes, Reels, historias, cuenta y páginas sin fotos conservan Instagram.
+El inicio es una lista del feed con filtros de fotos y reels.
+Los perfiles se recorren como un diario. Al elegir un reel se reproduce
+automáticamente sin sonido; se puede activar el audio o pausar.
+La columna derecha permite guardar favoritos y volver a perfiles recientes.
+
+Lee las publicaciones cargadas en la página y guarda preferencias locales y
+los favoritos que elijas. Hasta 12 perfiles recientes se guardan en memoria
+de sesión y se borran al reiniciar Chrome o recargar la extensión.
+Sin permiso de cookies ni historial, cuentas nuevas, servidores ni analíticas.
+Recreación independiente, sin afiliación con Instagram o Fotolog.

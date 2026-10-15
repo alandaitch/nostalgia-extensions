@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Taringa! para Reddit",
+  "version": "2.1.0",
+  "description": "Taringa clásica con tus posts de Reddit: títulos azules, filas alternadas y el header azul de siempre.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Taringa! para Reddit",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.reddit.com/*",
+        "https://reddit.com/*",
+        "https://new.reddit.com/*"
+      ],
+      "js": [
+        "config.js",
+        "runtime.js",
+        "content.js"
+      ],
+      "css": [
+        "skin.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

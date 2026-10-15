@@ -1,0 +1,20 @@
+TARINGA! PARA REDDIT · 2.1.0
+
+Actualización: en chrome://extensions, recargá esta extensión y después Reddit.
+La carpeta puede quedarse en el mismo lugar; se conservan tus preferencias.
+
+Instalación nueva: Chrome > chrome://extensions > Modo de desarrollador >
+Cargar descomprimida > seleccionar esta carpeta (la que tiene manifest.json).
+
+El Taringa de la captura de Alan: cabecera azul, secciones blancas, títulos
+azules en negrita y filas alternadas. Categorías al lado de Recientes.
+Puntos y destacados provienen de los posts cargados. Publicidad identificada.
+Al abrir un post se mantienen el contenido y los controles reales de Reddit.
+Al volver se recupera el feed que ya habías cargado.
+Colores, activación y títulos compactos/amplios desde el ícono de la extensión.
+Mensajes, configuración, creación, páginas sin posts y old.reddit conservan
+su interfaz original.
+
+Lee las publicaciones cargadas en la página y guarda preferencias locales.
+Sin cookies, historial, cuentas nuevas, servidores ni analíticas.
+Recreación independiente, sin afiliación con Reddit o Taringa.

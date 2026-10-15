@@ -1,0 +1,18 @@
+Tu Reddit con el diseño clásico de Taringa: cabecera azul, títulos azules en negrita, filas alternadas y tres columnas.
+
+• Los posts reales de tu feed en una lista compacta al estilo clásico.
+• Categorías basadas en las comunidades del feed cargado.
+• Destacados ordenados por los votos reales de esos posts.
+• Accesos a comunidades, búsqueda, novedades, favoritos y creación de posts.
+• Contenido, videos, comentarios y controles originales de Reddit dentro del marco del skin al abrir una publicación.
+• Conserva el feed cargado al regresar de un post dentro de la misma página.
+• Paletas azul clásico y cyber de noche, títulos compactos o amplios y un interruptor para volver a Reddit.
+
+Sólo transforma páginas compatibles de Reddit actual. Mensajes, configuración, creación, pantallas sin publicaciones y old.reddit.com conservan su interfaz original. Los anuncios presentes en el feed se identifican como Patrocinado.
+
+PRIVACIDAD Y PERMISOS
+Sólo actúa en Reddit. El permiso storage guarda las preferencias del diseño en tu navegador. Procesa las publicaciones localmente y no las envía al desarrollador. Sin servidores propios, analíticas ni cuentas adicionales. Los medios mantienen sus proveedores originales.
+
+Requiere acceso habitual a Reddit. Los cambios de Reddit pueden requerir actualizar la extensión.
+
+Recreación independiente creada por Alan Daitch. No está afiliada a Reddit ni Taringa. Las marcas pertenecen a sus respectivos titulares.

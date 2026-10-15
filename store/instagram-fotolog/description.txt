@@ -1,0 +1,17 @@
+Tu Instagram con el diseño de un Fotolog clásico: diario, miniaturas, paletas por usuario y una foto —o un reel— en el centro.
+
+• Inicio propio para recorrer tus publicaciones cargadas, con filtros de Fotos y Reels.
+• Perfiles como diarios de tres columnas: miniaturas a la izquierda, publicación central y favoritos a la derecha.
+• Reels que se reproducen en video al seleccionarlos, inicialmente sin sonido. Podés pausar y activar el audio.
+• Ocho paletas y un modo «Al azar por usuario» que conserva el color de cada cuenta.
+• Favoritos elegidos por vos y hasta 12 perfiles visitados recientemente durante la sesión.
+• Frase personalizada y un interruptor para volver a la interfaz original.
+
+Trabaja sobre el contenido que Instagram ya cargó. Me gusta, Guardar y los formularios originales siguen perteneciendo a Instagram. Los mensajes, las historias y otras pantallas conservan su interfaz original.
+
+PRIVACIDAD Y PERMISOS
+Sólo actúa en Instagram. El permiso storage guarda el diseño y los favoritos en tu navegador; los recientes duran la sesión. Procesa las publicaciones localmente y no las envía al desarrollador. Sin servidores propios, analíticas ni cuentas adicionales. Las fotos y videos conservan sus proveedores originales.
+
+Requiere acceso habitual a Instagram. Los cambios de Instagram pueden requerir actualizar la extensión.
+
+Recreación independiente creada por Alan Daitch. No está afiliada a Instagram, Meta ni Fotolog. Las marcas pertenecen a sus respectivos titulares.
