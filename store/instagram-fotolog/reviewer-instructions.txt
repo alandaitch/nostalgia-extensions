@@ -1,0 +1,12 @@
+Review instructions — Fotolog para Instagram 2.3.0
+
+1. Install the extension, then open https://www.instagram.com/ with regular access to Instagram. The extension has no account system or backend and does not bypass Instagram authentication. No extension-specific credentials, payments or subscription are required.
+2. On a loaded home feed, check the Fotolog index, Fotos/Reels filters, author links and the control to load more posts.
+3. Open a post or an author profile. The diary has three columns. Selecting a reel thumbnail loads the site's original video and starts it muted. Check pause/play and enabling sound.
+4. Open Colores in the diary. Choose a palette or Al azar por usuario; the same author retains a deterministic palette. Mezclar paletas changes that mapping.
+5. Add a profile to favorites; it appears in the sidebar. Open another profile and verify the recent profiles list. Only up to 12 account names are kept in chrome.storage.session; favorites are in chrome.storage.local.
+6. The toolbar popup changes the palette, diary tagline and enabled state. Disable the skin to restore Instagram. The original login, messages, stories, forms and other unsupported screens remain native.
+
+All executable code is in the package. Photo/video resources retain Instagram's original providers. All processed page content stays local; there is no analytics endpoint or developer server.
+
+Public privacy policy: https://alandaitch.github.io/nostalgia-extensions/privacy.html#fotolog

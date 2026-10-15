@@ -1,0 +1,22 @@
+{
+  "language": "es",
+  "singlePurpose": "Presentar las publicaciones de Instagram con una interfaz inspirada en un Fotolog clásico, incluidos su índice, diario, colores, favoritos y perfiles recientes.",
+  "storageJustification": "Guarda localmente la activación del skin, la paleta, la frase personalizada, la semilla de colores y hasta 30 nombres de favoritos elegidos por el usuario. chrome.storage.session conserva hasta 12 nombres de perfiles visitados para el lateral de recientes durante la sesión del navegador. No se sincronizan ni se envían al desarrollador.",
+  "siteAccessJustification": "Los content scripts se limitan a https://www.instagram.com/* y https://instagram.com/*. Necesitan leer las publicaciones ya renderizadas y adaptar su presentación; conservan el reproductor y los controles originales. No solicitan acceso a otros sitios ni a cookies o historial de Chrome.",
+  "remoteCode": false,
+  "privacyPolicyUrl": "https://alandaitch.github.io/nostalgia-extensions/privacy.html#fotolog",
+  "homepageUrl": "https://alandaitch.github.io/nostalgia-extensions/",
+  "supportUrl": "https://github.com/alandaitch/nostalgia-extensions/issues",
+  "dataHandling": {
+    "personallyIdentifiableInformation": "Nombres de cuenta presentes en las publicaciones, favoritos elegidos y recientes. Procesamiento local.",
+    "webHistory": "Rutas de Instagram y hasta 12 perfiles visitados en el skin durante la sesión. No lee el historial general de Chrome.",
+    "websiteContent": "Textos, fechas, enlaces, fotos y videos ya cargados. Procesamiento local para la interfaz.",
+    "userActivity": "La selección de publicaciones y perfiles se usa sólo para navegar dentro del skin; no hay telemetría ni métricas enviadas.",
+    "transmissionToDeveloper": false,
+    "saleOrAdvertisingUse": false,
+    "unrelatedUse": false,
+    "creditworthinessOrLendingUse": false
+  },
+  "distribution": "Gratis, pública, todos los territorios admitidos",
+  "status": "Material preparado; pendiente de acceso al panel, carga y revisión de Google"
+}

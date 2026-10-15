@@ -1,0 +1,22 @@
+{
+  "language": "es",
+  "singlePurpose": "Presentar los feeds y publicaciones de Reddit con una interfaz inspirada en el Taringa clásico, sus listas de posts, categorías y destacados.",
+  "storageJustification": "Guarda localmente la activación del skin, la paleta y el modo de títulos compactos o amplios. No guarda un historial permanente de posts ni sincroniza preferencias con servidores.",
+  "siteAccessJustification": "Los content scripts se limitan a https://www.reddit.com/*, https://reddit.com/* y https://new.reddit.com/*. Leen publicaciones ya renderizadas para armar el índice clásico y mantener contenido y controles originales en los posts. No solicitan acceso a otros sitios ni a cookies o historial de Chrome.",
+  "remoteCode": false,
+  "privacyPolicyUrl": "https://alandaitch.github.io/nostalgia-extensions/privacy.html#taringa",
+  "homepageUrl": "https://alandaitch.github.io/nostalgia-extensions/",
+  "supportUrl": "https://github.com/alandaitch/nostalgia-extensions/issues",
+  "dataHandling": {
+    "personallyIdentifiableInformation": "Nombres de autores presentes en los posts para los accesos y aportes recientes. Procesamiento local.",
+    "webHistory": "Ruta actual y metadatos de hasta tres feeds en la memoria de la página para regresar a ellos. No lee el historial general de Chrome.",
+    "websiteContent": "Títulos, enlaces, comunidades, autores, votos, cantidades de comentarios y medios ya cargados. Procesamiento local.",
+    "userActivity": "La categoría seleccionada y la navegación se usan sólo para el skin; no hay telemetría ni métricas enviadas.",
+    "transmissionToDeveloper": false,
+    "saleOrAdvertisingUse": false,
+    "unrelatedUse": false,
+    "creditworthinessOrLendingUse": false
+  },
+  "distribution": "Gratis, pública, todos los territorios admitidos",
+  "status": "Material preparado; pendiente de acceso al panel, carga y revisión de Google"
+}

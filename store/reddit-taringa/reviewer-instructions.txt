@@ -1,0 +1,12 @@
+Review instructions — Taringa! para Reddit 2.1.0
+
+1. Install the extension and open https://www.reddit.com/ or a public community such as https://www.reddit.com/r/argentina/. Normal Reddit access and any restrictions imposed by Reddit still apply. The extension has no account system or backend. No extension-specific credentials, payment or subscription are required.
+2. Check the blue header, two navigation rows, striped post list, community category filter and featured posts ordered by the scores of loaded posts.
+3. Open a post. Its original content, media, comments and controls are displayed inside the classic frame.
+4. Return to the feed; posts previously loaded within that page are retained. Load more posts with Siguientes posts.
+5. Open the toolbar popup. Switch between blue and night palettes; change compact/wide titles; disable the skin to restore Reddit.
+6. Messages, settings, post creation, unsupported screens and old.reddit.com remain native.
+
+All executable code is in the package. Media retain their original providers. All processed page content stays local; there is no analytics endpoint or developer server. Only design settings are persisted. Metadata for up to three feeds is kept temporarily in page memory.
+
+Public privacy policy: https://alandaitch.github.io/nostalgia-extensions/privacy.html#taringa
