@@ -3,7 +3,7 @@
   'use strict';
   const R=globalThis.RetroSkin,{el,own,mark,text,url}=R,site='https://www.instagram.com';
   const reserved=new Set(['p','reel','reels','explore','direct','accounts','stories','about','legal']);
-  const state={selected:null,photo:0,path:'',contextPath:'',records:[],cache:new Map(),nativeTask:false,roots:new Map(),player:null,loading:null,pendingAction:null,autoOpened:null,view:location.pathname==='/'?'home':'diary',homeFilter:'all',homeCache:new Map(),directory:new Map(),visited:new Map(),sessionVisited:[],lastVisit:null};
+  const state={selected:null,photo:0,path:'',contextPath:'',records:[],cache:new Map(),nativeTask:false,roots:new Map(),player:null,loading:null,pendingAction:null,actions:new Map(),autoOpened:null,view:location.pathname==='/'?'home':'diary',homeFilter:'all',homeCache:new Map(),directory:new Map(),visited:new Map(),sessionVisited:[],lastVisit:null};
   const link=(label,href,cls='')=>el('a',{href,text:label,class:cls});
   const button=(label,fn,cls='')=>el('button',{type:'button',text:label,onclick:fn,class:cls});
   const postKey=pathname=>pathname.match(/^\/(?:[^/]+\/)?(?:p|reel|reels)\/([^/]+)/)?.[1]||null;
@@ -13,7 +13,39 @@
   const main=()=>[...document.querySelectorAll('main,[role="main"]')].find(original);
   function profile(href){try{const p=new URL(href,site).pathname.split('/').filter(Boolean);return p.length===1&&!reserved.has(p[0])?p[0]:null;}catch{return null;}}
   function root(node){while(node?.parentElement&&node.parentElement!==document.body)node=node.parentElement;return node;}
-  function control(scope,pattern){return [...(scope?.querySelectorAll('button,[role="button"]')||[])].filter(n=>pattern.test(n.getAttribute('aria-label')||n.querySelector('svg[aria-label]')?.getAttribute('aria-label')||'')).at(-1);}
+  function labelOf(node){return node?.getAttribute('aria-label')||node?.querySelector('svg[aria-label]')?.getAttribute('aria-label')||'';}
+  // Post controls precede comment controls; taking the last Like can like a comment.
+  function control(scope,pattern){return [...(scope?.querySelectorAll('button,[role="button"]')||[])].find(n=>!n.closest('li,[role="listitem"]')&&pattern.test(labelOf(n)));}
+  const actionPatterns={comment:/^(Comentar|Comment)$/i,like:/^(Me gusta|Like|Ya no me gusta|Unlike)$/i,save:/^(Guardar|Save|Eliminar|Remove|Quitar de guardados|Eliminar de guardados|Remove from saved|Unsave)$/i};
+  function nativeAction(record,kind){
+    if(!liveRecord(record))return null;
+    const target=control(record.article,actionPatterns[kind]);if(!target)return null;
+    const label=labelOf(target),pressed=target.getAttribute('aria-pressed');
+    const active=pressed==='true'||(kind==='like'?/^(Ya no me gusta|Unlike)$/i:/^(Eliminar|Remove|Quitar de guardados|Eliminar de guardados|Remove from saved|Unsave)$/i).test(label);
+    return {target,active};
+  }
+  function entryTitle(description){
+    const value=(description||'').replace(/\s+/gu,' ').trim();
+    const first=value?(typeof Intl.Segmenter==='function'?[...new Intl.Segmenter('es',{granularity:'sentence'}).segment(value)][0]?.segment:value.match(/^.*?(?:[.!?](?:\s|$)|$)/u)?.[0]):'';
+    let title=(first||value||'Un día en mi Fotolog').trim();
+    const parts=typeof Intl.Segmenter==='function'?[...new Intl.Segmenter('es',{granularity:'grapheme'}).segment(title)].map(x=>x.segment):Array.from(title);
+    if(parts.length>80){title=parts.slice(0,79).join('');const space=title.lastIndexOf(' ');if(space>40)title=title.slice(0,space);title=title.trimEnd()+'…';}
+    let index=0;return title.replace(/\p{L}/gu,letter=>index++%2?letter.toLocaleLowerCase('es'):letter.toLocaleUpperCase('es'));
+  }
+  function syncActions(record){
+    for(const kind of ['like','save']){
+      const node=document.querySelector('.fl-'+kind),native=nativeAction(record,kind),key=record.id+':'+kind,pending=state.actions.get(key);
+      if(pending&&!pending.error){
+        if(native&&native.active===pending.expected)state.actions.delete(key);
+        else if(Date.now()-pending.started>=5000)pending.error='No se confirmó el cambio. Revisá la publicación o reintentá.';
+      }
+      const status=state.actions.get(key),waiting=Boolean(status&&!status.error);
+      node.disabled=waiting;node.setAttribute('aria-busy',String(waiting));
+      if(native)node.setAttribute('aria-pressed',String(native.active));else node.removeAttribute('aria-pressed');
+      text(node,waiting?'Aplicando…':kind==='like'?(native?.active?'Te gusta ♥ · Quitar me gusta':'Me gusta'):(native?.active?'Guardado en Instagram ★ · Quitar':'Agregar a favoritos en Instagram'));
+    }
+    text(document.getElementById('fl-action-status'),['like','save'].map(kind=>state.actions.get(record.id+':'+kind)?.error).filter(Boolean).join(' '));
+  }
   const current=()=>state.records.find(r=>r.id===state.selected)||state.records[0];
   function renderedKey(scope){
     if(!scope)return null;
@@ -54,7 +86,7 @@
     const video=videoIn(scope),photos=video?[]:media(scope,key);
     const poster=video&&(old?.photos[0]?.src||videoThumbnail(video));if(poster)photos.push({src:poster,alt:'Video de '+author});
     const stamp=[...scope.querySelectorAll('time')].find(t=>keyOf(t.closest('a[href]')?.href)===key)||scope.querySelector('time');
-    return {id:key?'post:'+key:fallbackId,href:url(href)||site+'/'+author+'/',author,article:scope,photos:photos.length?photos:old?.photos||[],video,isVideo:!!video||old?.isVideo||/\/reels?\//.test(href||''),date:stamp?.getAttribute('datetime')||old?.date||'',caption:old?.caption||caption(scope,author)};
+    return {id:key?'post:'+key:fallbackId,href:url(href)||site+'/'+author+'/',author,article:scope,photos:photos.length?photos:old?.photos||[],video,isVideo:!!video||old?.isVideo||/\/reels?\//.test(href||''),date:stamp?.getAttribute('datetime')||old?.date||'',caption:scope.querySelector('h1')?(scope.querySelector('h1').textContent||'').trim():caption(scope,author)||old?.caption||''};
   }
   function collect(){
     const source=main();if(!source)return [];
@@ -131,7 +163,7 @@
     if(holder.dataset.signature===sig)return;holder.dataset.signature=sig;
     holder.replaceChildren(...records.map(record=>{
       const preview=link('',record.href,'fl-home-preview');preview.append(thumbnail(record,(record.isVideo?'Reel':'Foto')+' de '+record.author));preview.addEventListener('click',e=>{e.preventDefault();select(record.id);});
-      return el('article',{class:'fl-home-entry'},[preview,el('div',{class:'fl-entry-text'},[el('div',{class:'fl-entry-heading'},[profileLink(record.author),el('small',{text:[record.isVideo?'REEL':'FOTO',date(record.date)].filter(Boolean).join(' · ')})]),el('p',{text:record.caption||'Una nueva publicación en su Fotolog.'}),el('div',{class:'fl-entry-links'},[button(record.isVideo?'▶ Ver reel':'Ver foto',()=>select(record.id)),profileLink(record.author,'fl-entry-profile')])])]);
+      return el('article',{class:'fl-home-entry'},[preview,el('div',{class:'fl-entry-text'},[el('div',{class:'fl-entry-heading'},[profileLink(record.author),el('small',{text:[record.isVideo?'REEL':'FOTO',date(record.date)].filter(Boolean).join(' · ')})]),el('h3',{class:'fl-entry-title',text:entryTitle(record.caption)}),el('p',{text:record.caption||'Una nueva publicación en su Fotolog.'}),el('div',{class:'fl-entry-links'},[button(record.isVideo?'▶ Ver reel':'Ver foto',()=>select(record.id)),profileLink(record.author,'fl-entry-profile')])])]);
     }));
     for(const a of holder.querySelectorAll('.fl-entry-profile'))text(a,'Visitar su Fotolog');
     if(!records.length)holder.append(el('p',{class:'fl-home-empty',text:'Todavía no hay publicaciones en esta sección.'}));
@@ -186,9 +218,19 @@
     if(query){let count=0;const fill=()=>{const input=[...document.querySelectorAll('input')].find(n=>original(n)&&/buscar|search/i.test(n.placeholder+' '+(n.getAttribute('aria-label')||'')));if(input){Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,query);input.dispatchEvent(new Event('input',{bubbles:true}));input.focus();}else if(++count<15)setTimeout(fill,150);};fill();}
   }
   function postAction(kind){
-    const record=current(),patterns={comment:/^Comentar$|^Comment$/i,like:/^Me gusta$|^Like$|^Ya no me gusta$|^Unlike$/i,save:/^Guardar$|^Save$|^Eliminar$|^Remove$/i};const target=control(record?.article,patterns[kind]);
-    if(!liveRecord(record)||!target?.isConnected){loadRecord(record,kind);return;}
-    if(kind==='comment'){releasePlayer();state.nativeTask=true;R.render();}target.click();if(kind!=='comment')setTimeout(R.render,250);
+    const record=current();if(!record)return;
+    if(!liveRecord(record)){loadRecord(record,kind);return;}
+    const native=kind==='comment'?{target:control(record.article,actionPatterns.comment)}:nativeAction(record,kind);
+    const target=native?.target,key=record.id+':'+kind;
+    if(!target?.isConnected||target.disabled||target.getAttribute('aria-disabled')==='true'){
+      state.actions.set(key,{error:'No se encontró un control disponible. Abrí la publicación en Instagram.'});R.render();return;
+    }
+    if(kind==='comment'){releasePlayer();state.nativeTask=true;R.render();target.click();return;}
+    const previous=state.actions.get(key);if(previous&&!previous.error)return;
+    state.actions.set(key,{expected:!native.active,started:Date.now()});
+    // Confirm only from Instagram's resulting state; never assume click means success.
+    try{target.click();}catch{state.actions.set(key,{error:'No se pudo aplicar el cambio. Reintentá en Instagram.'});}
+    R.render();setTimeout(R.render,250);setTimeout(R.render,5100);
   }
   function more(){
     const source=main(),last=source?.querySelector('article:last-of-type')||[...(source?.querySelectorAll('a[href]')||[])].filter(a=>keyOf(a.href)&&a.querySelector('img')).at(-1);
@@ -218,8 +260,8 @@
           el('nav',{class:'fl-photo-navigation','aria-label':'Navegar por las publicaciones'},[button('« Anterior',()=>step(-1)),button('Siguiente »',()=>step(1))]),
           el('figure',{class:'fl-photo-frame'},[el('a',{id:'fl-photo-link',href:site+'/',title:'Ver esta publicación',onclick:e=>{e.preventDefault();const record=current();if(record?.isVideo)play();else if(!record?.article?.isConnected)loadRecord(record);}},[el('img',{id:'fl-photo',alt:'',decoding:'async'})]),el('div',{id:'fl-video-slot',hidden:true}),el('div',{id:'fl-player-controls'},[button('▶ Reproducir reel',play),button('Activar sonido',()=>{const video=state.player?.video;if(video)video.muted=!video.muted;})]),el('p',{id:'fl-media-status','aria-live':'polite'}),el('div',{id:'fl-carousel'})]),
           el('p',{id:'fl-photo-date',class:'fl-date'}),
-          el('nav',{class:'fl-actions','aria-label':'Acciones de la publicación'},[button('Firmar',()=>postAction('comment')),button('Me gusta',()=>postAction('like'),'fl-like'),button('Agregar a favoritos',()=>postAction('save')),el('a',{id:'fl-original-post',href:site+'/',text:'Ver publicación'})]),
-          el('p',{id:'fl-caption'}),
+          el('nav',{class:'fl-actions','aria-label':'Acciones de la publicación'},[button('Firmar',()=>postAction('comment')),button('Me gusta',()=>postAction('like'),'fl-like'),button('Agregar a favoritos en Instagram',()=>postAction('save'),'fl-save'),el('a',{id:'fl-original-post',href:site+'/',text:'Ver publicación'})]),
+          el('p',{id:'fl-action-status','aria-live':'polite',role:'status'}),el('p',{id:'fl-caption'}),
           el('section',{class:'fl-guestbook'},[el('h2',{text:'Libro de visitas'}),el('p',{text:'Pasá y dejá tu firma :)'}),button('Firmar el libro de visitas',()=>postAction('comment'))]),
           el('p',{id:'fl-empty',text:'Cargando las publicaciones de tus amigos…'})]),
         el('aside',{class:'fl-friends-rail','aria-label':'Favoritos y perfiles visitados'},[el('div',{id:'fl-friends'})])]),
@@ -257,14 +299,14 @@
         const summary={...record,article:null,video:null,anchor:null};
         if(validAuthor(record.author)){state.directory.set(record.author,summary);while(state.directory.size>30)state.directory.delete(state.directory.keys().next().value);}
         if(location.pathname==='/'){state.homeCache.set(record.id,summary);while(state.homeCache.size>200)state.homeCache.delete(state.homeCache.keys().next().value);}
-        if(state.loading===record.id&&liveRecord(record)){state.loading=null;if(state.pendingAction){const action=state.pendingAction;state.pendingAction=null;setTimeout(()=>postAction(action),0);}}
+        if(state.loading===record.id&&liveRecord(record)){state.loading=null;if(state.pendingAction){const action=state.pendingAction;state.pendingAction=null;setTimeout(()=>{if(R.settings.enabled&&current()?.id===record.id)postAction(action);},0);}}
       }
       while(state.cache.size>200)state.cache.delete(state.cache.keys().next().value);
       state.records=[...state.cache.values()];if(!state.records.some(r=>r.id===state.selected))state.selected=(state.records.find(r=>keyOf(r.href)===postKey(location.pathname))||state.records[0])?.id||null;
       shell();const selected=current(),account=user();
       document.documentElement.setAttribute('data-retro-page',state.view);document.documentElement.setAttribute('data-retro-native-task',String(state.nativeTask));
       for(const a of document.querySelectorAll('.fl-account-link'))a.href=account?site+'/'+account+'/':site+'/';
-      text(document.getElementById('fl-title'),R.settings.tagline===R.config.legacyTagline?R.config.defaults.tagline:R.settings.tagline);
+      text(document.getElementById('fl-title'),entryTitle(selected?.caption));
       const byline=document.getElementById('fl-byline'),name=selected?.author||profile(location.href)||account||'Mis favoritos';
       document.documentElement.setAttribute('data-retro-palette',state.view==='home'?'papel':paletteFor(name));
       const themeSelect=document.getElementById('fl-theme-select');if(themeSelect.value!==R.settings.theme)themeSelect.value=R.settings.theme;
@@ -282,7 +324,7 @@
           state.autoOpened=selected.id;
           setTimeout(()=>{if(R.settings.enabled&&!state.nativeTask&&current()?.id===selected.id)loadRecord(current());},0);
         }
-        text(document.getElementById('fl-photo-date'),date(selected.date));text(document.getElementById('fl-caption'),selected.caption);text(document.querySelector('.fl-like'),control(selected.article,/^Ya no me gusta$|^Unlike$/i)?'Te gusta ♥':'Me gusta');
+        text(document.getElementById('fl-photo-date'),date(selected.date));text(document.getElementById('fl-caption'),selected.caption);syncActions(selected);
         const carousel=document.getElementById('fl-carousel'),sig=selected.id+selected.photos.length+':'+state.photo;
         if(carousel.dataset.signature!==sig){carousel.dataset.signature=sig;carousel.replaceChildren(...(!hasVideo&&selected.photos.length>1?selected.photos.map((p,i)=>button(String(i+1),()=>{state.photo=i;R.render();},i===state.photo?'fl-current-photo':'')):[]));}
       }else releasePlayer();
@@ -292,7 +334,7 @@
       rails(galleryRecords(),selected);sidebar(selected);
     },
     beforeClear:releasePlayer,
-    refresh(){if(state.loading)R.render();},
-    cleanup(){releasePlayer();for(const [node,inert]of state.roots)node.inert=inert;state.roots.clear();state.records=[];state.cache.clear();if(!R.settings.enabled){state.homeCache.clear();state.directory.clear();state.visited.clear();}state.nativeTask=false;state.loading=null;state.pendingAction=null;state.autoOpened=null;}
+    refresh(){if(state.loading||[...state.actions.values()].some(action=>!action.error))R.render();},
+    cleanup(){releasePlayer();for(const [node,inert]of state.roots)node.inert=inert;state.roots.clear();state.records=[];state.cache.clear();if(!R.settings.enabled){state.homeCache.clear();state.directory.clear();state.visited.clear();}state.actions.clear();state.nativeTask=false;state.loading=null;state.pendingAction=null;state.autoOpened=null;}
   });
 })();

@@ -5,7 +5,9 @@ Tu Instagram con el diseño de un Fotolog clásico: diario, miniaturas, paletas 
 • Reels que se reproducen en video al seleccionarlos, inicialmente sin sonido. Podés pausar y activar el audio.
 • Ocho paletas y un modo «Al azar por usuario» que conserva el color de cada cuenta.
 • Favoritos elegidos por vos y hasta 12 perfiles visitados recientemente durante la sesión.
-• Frase personalizada y un interruptor para volver a la interfaz original.
+• Títulos automáticos desde la primera frase de la descripción, con mayúsculas y minúsculas estilo Fotolog.
+• Me gusta y guardado con estado confirmado por los controles de Instagram.
+• Un interruptor para volver a la interfaz original.
 
 Trabaja sobre el contenido que Instagram ya cargó. Me gusta, Guardar y los formularios originales siguen perteneciendo a Instagram. Los mensajes, las historias y otras pantallas conservan su interfaz original.
 

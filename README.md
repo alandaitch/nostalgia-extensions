@@ -2,7 +2,7 @@
 
 Dos extensiones gratuitas de Chrome creadas por Alan Daitch:
 
-- **Fotolog para Instagram 2.3.0**: inicio con filtros de fotos y reels; perfiles como diarios de tres columnas; reproducción de reels, paletas por usuario, favoritos y perfiles recientes.
+- **Fotolog para Instagram 2.3.1**: inicio con filtros de fotos y reels; perfiles como diarios de tres columnas; reproducción de reels, paletas por usuario, favoritos y perfiles recientes, títulos automáticos y estados de Me gusta y guardado.
 - **Taringa! para Reddit 2.1.0**: cabecera azul, índice clásico de posts, categorías por comunidad, destacados y publicaciones originales dentro del skin.
 
 [Descargas e instalación](https://alandaitch.github.io/nostalgia-extensions/) · [Última versión](https://github.com/alandaitch/nostalgia-extensions/releases/latest) · [Privacidad](https://alandaitch.github.io/nostalgia-extensions/privacy.html) · [Reportar un error](https://github.com/alandaitch/nostalgia-extensions/issues)
