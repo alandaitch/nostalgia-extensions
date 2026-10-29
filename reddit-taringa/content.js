@@ -6,6 +6,16 @@
   const link=(label,href,cls='')=>el('a',{href,text:label,class:cls});
   const button=(label,fn,cls='')=>el('button',{type:'button',text:label,onclick:fn,class:cls});
   const isPost=()=>location.pathname.includes('/comments/');
+  const isDirectory=()=>/^\/subreddits(?:\/|$)/.test(location.pathname);
+  // Empty communities and their information tabs still need usable native controls.
+  const isCommunity=()=>/^\/r\/[^/]+(?:\/(?:hot|new|top|rising|about)(?:\/.*)?)?\/?$/.test(location.pathname);
+  function navigation(directory){
+    for(const a of document.querySelectorAll('#rt-app .rt-primary>a')){
+      const selected=directory?a.pathname==='/subreddits/':a.textContent==='Posts';
+      a.classList.toggle('rt-selected',selected);
+      if(selected)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+    }
+  }
   function source(){return document.querySelector('shreddit-app')||document.querySelector('body>.content');}
   function collect(){
     return [...document.querySelectorAll('shreddit-post,shreddit-ad-post')].filter(n=>!n.closest('[data-retro-owned]')).map((node,i)=>{
@@ -86,7 +96,7 @@
     setTimeout(()=>{if(state.posts.length<=count)text(load,'Reintentar cargar más »');else text(load,'Siguientes posts »');},1800);
   }
   R.start({
-    supported(){return location.hostname!=='old.reddit.com'&&!/^\/(login|register|account|settings|chat|message|notifications|submit|appeal)\b/.test(location.pathname)&&Boolean(source())&&(isPost()||collect().length>0||state.feeds.has(location.pathname+location.search)||(state.path===location.pathname+location.search&&state.cache.size>0));},
+    supported(){return location.hostname!=='old.reddit.com'&&!/^\/(login|register|account|settings|chat|message|notifications|submit|appeal)\b/.test(location.pathname)&&Boolean(source())&&(isDirectory()||isCommunity()||isPost()||collect().length>0||state.feeds.has(location.pathname+location.search)||(state.path===location.pathname+location.search&&state.cache.size>0));},
     render(){
       const path=location.pathname+location.search;
       if(state.path!==path){
@@ -100,9 +110,14 @@
       }
       const nativeRoot=source();mark(nativeRoot,'data-rt-native-root');shell();
       if(state.root!==nativeRoot){if(state.root)state.root.inert=state.priorInert;state.root=nativeRoot;state.priorInert=Boolean(nativeRoot.inert);}
-      const thread=isPost();document.documentElement.setAttribute('data-retro-page',thread?'post':'feed');
-      nativeRoot.inert=thread?state.priorInert:true;
-      if(thread){document.getElementById('rt-classic-content').hidden=true;return;}
+      const thread=isPost(),directory=isDirectory(),nativeCommunity=isCommunity()&&collect().length===0;
+      document.documentElement.setAttribute('data-retro-page',directory?'communities':thread||nativeCommunity?'post':'feed');
+      navigation(directory);
+      nativeRoot.inert=thread||directory||nativeCommunity?state.priorInert:true;
+      let heading=document.getElementById('rt-directory-heading');
+      if(directory&&!heading){heading=el('h1',{id:'rt-directory-heading',text:'Comunidades'});document.getElementById('rt-classic-content').before(heading);}
+      if(heading)heading.hidden=!directory;
+      if(thread||directory||nativeCommunity){document.getElementById('rt-classic-content').hidden=true;return;}
       document.getElementById('rt-classic-content').hidden=false;
       for(const post of collect())state.cache.set(post.id,post);
       while(state.cache.size>200)state.cache.delete(state.cache.keys().next().value);

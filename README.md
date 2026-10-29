@@ -3,7 +3,7 @@
 Dos extensiones gratuitas de Chrome creadas por Alan Daitch:
 
 - **Fotolog para Instagram 2.3.0**: inicio con filtros de fotos y reels; perfiles como diarios de tres columnas; reproducción de reels, paletas por usuario, favoritos y perfiles recientes.
-- **Taringa! para Reddit 2.1.0**: cabecera azul, índice clásico de posts, categorías por comunidad, destacados y publicaciones originales dentro del skin.
+- **Taringa! para Reddit 2.1.1**: cabecera azul, índice clásico de posts, directorio de Comunidades, categorías por comunidad, destacados y publicaciones originales dentro del skin.
 
 [Descargas e instalación](https://alandaitch.github.io/nostalgia-extensions/) · [Última versión](https://github.com/alandaitch/nostalgia-extensions/releases/latest) · [Privacidad](https://alandaitch.github.io/nostalgia-extensions/privacy.html) · [Reportar un error](https://github.com/alandaitch/nostalgia-extensions/issues)
 
@@ -16,7 +16,7 @@ Dos extensiones gratuitas de Chrome creadas por Alan Daitch:
 
 También podés descargar este repositorio y seleccionar directamente `instagram-fotolog/` o `reddit-taringa/`.
 
-**Chrome Web Store:** ambas extensiones se enviaron a revisión el 15 de octubre de 2026, con publicación automática después de la aprobación. Aún no están disponibles en la tienda; mientras tanto, la descarga requiere los pasos anteriores.
+**Chrome Web Store:** [Taringa para Reddit](https://chromewebstore.google.com/detail/taringa-para-reddit/plompglhbppfionphemochbpichfokfb) está disponible en la tienda. La versión 2.1.1 de este repositorio incorpora el directorio de Comunidades; su envío y aprobación se verifican por separado.
 
 ## Uso
 
