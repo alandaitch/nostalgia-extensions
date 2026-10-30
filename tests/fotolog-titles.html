@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<title>Fotolog: pruebas locales de títulos</title>
+<link rel="stylesheet" href="../instagram-fotolog/skin.css">
+<body>
+<div><main><article>
+  <a href="https://www.instagram.com/alice/">alice</a>
+  <a href="https://www.instagram.com/p/TITLE_TEST/"><time>Hoy</time></a>
+  <img width="400" alt="Foto de prueba local" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
+  <h1>Hola<br>mundo. Segunda frase.</h1>
+  <button><svg aria-label="Like"></svg></button>
+  <button><svg aria-label="Save"></svg></button>
+</article></main></div>
+<pre id="results" data-retro-owned="test" style="position:fixed;bottom:0;left:0;right:0;z-index:9999;margin:0;padding:12px;background:white;color:black;font:14px monospace;max-height:35vh;overflow:auto">Preparando pruebas…</pre>
+<script>
+globalThis.chrome={runtime:{sendMessage:async()=>({authors:[]})},storage:{local:{get:async defaults=>defaults,set:async()=>{}},onChanged:{addListener(){}}}};
+</script>
+<script src="../instagram-fotolog/config.js"></script>
+<script src="../instagram-fotolog/runtime.js"></script>
+<script src="../instagram-fotolog/content.js"></script>
+<script>
+(async()=>{
+  const results=document.getElementById('results'),checks=[];
+  const equal=(actual,expected,label)=>{if(actual!==expected)throw new Error(label+': '+JSON.stringify(actual)+' !== '+JSON.stringify(expected));checks.push(label);};
+  const ok=(condition,label)=>{if(!condition)throw new Error(label);checks.push(label);};
+  try{
+    for(let i=0;!document.getElementById('fl-title')&&i<60;i++)await new Promise(requestAnimationFrame);
+    const heading=document.querySelector('article h1');
+    const title=()=>document.getElementById('fl-title').textContent;
+    const caption=()=>document.getElementById('fl-caption').textContent;
+    equal(title(),'HoLa MuNdO.','BR produce espacio y conserva primera frase');
+    equal(caption(),'Hola\nmundo. Segunda frase.','La descripción conserva el salto');
+    equal(heading.querySelectorAll('br').length,1,'El DOM original conserva BR');
+    heading.innerHTML='<span>Hola</span><br><br><span>mundo. Segunda frase.</span>';RetroSkin.render();
+    equal(title(),'HoLa MuNdO.','BR repetidos y spans no unen palabras');
+    equal(caption(),'Hola\n\nmundo. Segunda frase.','Se conservan líneas vacías de descripción');
+    heading.textContent='Hola\r\nmundo. Segunda frase.';RetroSkin.render();
+    equal(title(),'HoLa MuNdO.','CRLF produce un espacio');
+    heading.innerHTML='Árboles<br>y café 😊. Esta frase no va.';RetroSkin.render();
+    equal(title(),'ÁrBoLeS y CaFé 😊.','Acentos, emoji y mayúsculas alternadas');
+    heading.innerHTML='Fragmento de mi artículo para Think with Google<br>Pueden leer el artículo entero en el primer comentario!';RetroSkin.render();
+    ok(title().startsWith('FrAgMeNtO dE mI aRtÍcUlO pArA tHiNk WiTh GoOgLe PuEdEn'),'Caso observado: Google y Pueden quedan separados');
+    ok(!/[\r\n]/.test(title()),'El título no contiene saltos');
+    heading.innerHTML='😊 '+('árboles<br>y café 👨‍👩‍👧‍👦 '.repeat(12));RetroSkin.render();
+    ok(title().endsWith('…'),'Texto largo termina en elipsis');
+    ok([...new Intl.Segmenter('es',{granularity:'grapheme'}).segment(title())].length<=80,'Máximo 80 grafemas');
+    ok(title().includes('👨‍👩‍👧‍👦')&&!title().includes('�'),'No corta emoji familiar ni introduce caracteres rotos');
+    heading.textContent='';RetroSkin.render();
+    equal(title(),'Un DíA eN mI fOtOlOg','Fallback sin descripción');
+    heading.innerHTML='Árboles<br>y café 😊. Esta frase no va.';RetroSkin.render();
+    results.textContent='PASS: '+checks.length+' comprobaciones\n'+checks.join('\n');
+    results.dataset.status='pass';results.dataset.count=String(checks.length);
+  }catch(error){results.textContent='FAIL: '+error.message+'\n'+checks.join('\n');results.dataset.status='fail';}
+})();
+</script>
+</body></html>

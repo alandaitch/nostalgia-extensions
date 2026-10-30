@@ -66,9 +66,11 @@
       .filter(n=>!key||!keyOf(n.closest('a[href]')?.href)||keyOf(n.closest('a[href]')?.href)===key)
       .map(n=>({src:url(n.currentSrc||n.src,'image'),alt:n.alt})).filter(n=>n.src&&!seen.has(n.src)&&seen.add(n.src));
   }
+  function readable(node){
+    const copy=node.cloneNode(true);for(const br of copy.querySelectorAll('br'))br.replaceWith('\n');return copy.textContent.trim();
+  }
   function caption(scope,author){
-    const heading=scope.querySelector('h1');if(heading?.textContent.trim())return heading.textContent.trim();
-    const readable=node=>{const copy=node.cloneNode(true);for(const br of copy.querySelectorAll('br'))br.replaceWith('\n');return copy.textContent.trim();};
+    const heading=scope.querySelector('h1');if(heading?.textContent.trim())return readable(heading);
     const anchors=[...scope.querySelectorAll('a[href]')].filter(a=>profile(a.href)===author&&!a.querySelector('img'));
     for(const anchor of anchors)for(let n=anchor.parentElement,i=0;n&&n!==scope&&i<9;n=n.parentElement,i++){
       const body=[...n.querySelectorAll('span')].find(s=>s.textContent.trim().length>25&&!s.querySelector('a,button,time,svg')&&![...s.querySelectorAll('span')].some(c=>c.textContent.trim().length>25));
@@ -86,7 +88,7 @@
     const video=videoIn(scope),photos=video?[]:media(scope,key);
     const poster=video&&(old?.photos[0]?.src||videoThumbnail(video));if(poster)photos.push({src:poster,alt:'Video de '+author});
     const stamp=[...scope.querySelectorAll('time')].find(t=>keyOf(t.closest('a[href]')?.href)===key)||scope.querySelector('time');
-    return {id:key?'post:'+key:fallbackId,href:url(href)||site+'/'+author+'/',author,article:scope,photos:photos.length?photos:old?.photos||[],video,isVideo:!!video||old?.isVideo||/\/reels?\//.test(href||''),date:stamp?.getAttribute('datetime')||old?.date||'',caption:scope.querySelector('h1')?(scope.querySelector('h1').textContent||'').trim():caption(scope,author)||old?.caption||''};
+    return {id:key?'post:'+key:fallbackId,href:url(href)||site+'/'+author+'/',author,article:scope,photos:photos.length?photos:old?.photos||[],video,isVideo:!!video||old?.isVideo||/\/reels?\//.test(href||''),date:stamp?.getAttribute('datetime')||old?.date||'',caption:scope.querySelector('h1')?readable(scope.querySelector('h1')):caption(scope,author)||old?.caption||''};
   }
   function collect(){
     const source=main();if(!source)return [];

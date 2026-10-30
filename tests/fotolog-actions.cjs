@@ -30,6 +30,13 @@ const path=require('node:path');const assert=require('node:assert/strict');
  // Replace native controls as React would, and verify resulting state, not stale references.
  await page.evaluate(()=>{const old=document.querySelector('#like2');const next=old.cloneNode(true);next.querySelector('svg').setAttribute('aria-label','Like');old.replaceWith(next);RetroSkin.render()});
  assert.equal(await page.locator('.fl-like').getAttribute('aria-pressed'),'false');
+ // Instagram h1 captions use real <br> nodes, which textContent otherwise drops.
+ await page.evaluate(()=>{document.querySelector('#b h1').innerHTML='Hola<br><br>mundo. Segunda frase.';RetroSkin.render()});
+ assert.equal(await page.locator('#fl-title').textContent(),'HoLa MuNdO.');
+ assert.equal(await page.locator('#fl-caption').textContent(),'Hola\n\nmundo. Segunda frase.');
+ assert.equal(await page.locator('#b h1 br').count(),2);
+ await page.evaluate(()=>{document.querySelector('#b h1').textContent='Hola\r\nmundo. Segunda frase.';RetroSkin.render()});
+ assert.equal(await page.locator('#fl-title').textContent(),'HoLa MuNdO.');
  await page.evaluate(()=>{document.querySelector('#b h1').textContent='😊 '+('árboles y café 👨‍👩‍👧‍👦 '.repeat(12));RetroSkin.render()});
  const title=await page.locator('#fl-title').textContent();assert.ok(title.endsWith('…'));assert.ok(!title.includes('�'));assert.ok(title.includes('👨‍👩‍👧‍👦'));
  await page.evaluate(()=>{document.querySelector('#b h1').textContent='';document.querySelector('#b').querySelectorAll('a').forEach(n=>{if(n.getAttribute('href')==='/alice/')n.remove()});RetroSkin.render()});
